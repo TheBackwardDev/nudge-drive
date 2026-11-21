@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Kick n mark (outlined, 256 grid) scaled into the 66dp safe zone -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp" android:height="108dp"
+    android:viewportWidth="108" android:viewportHeight="108">
+    <group android:scaleX="0.2266" android:scaleY="0.2266" android:translateX="25" android:translateY="25">
+        <path android:fillColor="#FFFFFFFF"
+            android:pathData="M36,202V110A76,76 0,0 1,188 110V170A12,12 0,0 0,200 182A20,20 0,0 1,200 222A52,52 0,0 1,148 170V110A36,36 0,0 0,76 110V202A20,20 0,0 1,36 202Z" />
+    </group>
+</vector>

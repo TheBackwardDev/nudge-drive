@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="theme-color" content="#D9CEFF" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#16121F" media="(prefers-color-scheme: dark)" />
+    <meta name="description" content="Nudge Drive joins all your Google Drives and S3 buckets into one storage pool. Upload, browse, preview and share from any browser." />
+    <title>Nudge Drive</title>
+    <script>
+      // Apply the saved theme before first paint (no flash). Values: light | dark | system.
+      (function () {
+        var saved = null
+        try { saved = localStorage.getItem('nudge:theme') } catch (e) {}
+        var dark = saved === 'dark' || ((saved === null || saved === 'system') && window.matchMedia('(prefers-color-scheme: dark)').matches)
+        document.documentElement.classList.toggle('dark', dark)
+        document.documentElement.style.colorScheme = dark ? 'dark' : 'light'
+        // The in-app theme choice also colours the browser / PWA title bar.
+        var metas = document.querySelectorAll('meta[name="theme-color"]')
+        for (var i = 0; i < metas.length; i++) metas[i].setAttribute('content', dark ? '#16121F' : '#D9CEFF')
+      })()
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

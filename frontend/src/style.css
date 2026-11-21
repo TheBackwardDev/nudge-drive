@@ -1,0 +1,621 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ------------------------------------------------------------------------------------------------
+   Lavender Glass design tokens, a 1:1 copy of the Android app's Nd palette
+   (shared/src/commonMain/kotlin/com/nudge/drive/ui/theme/Theme.kt: LightNd / DarkNd).
+   Theme tokens switch with the `dark` class on <html>; brand + file-type colours are constant.
+   Dark is the app's near-black theme: neutral greys with a faint violet glow at the very top,
+   purple only as an accent.
+   ------------------------------------------------------------------------------------------------ */
+:root {
+  --bg: linear-gradient(180deg, #d9ceff 0%, #ebe5ff 28%, #f7f4ff 56%, #ffffff 85%);
+  --bg-top: #d9ceff;
+  --auth-bg: linear-gradient(180deg, #cdbfff 0%, #dcd2ff 50%, #ebe5ff 100%);
+  --surface: #ffffff;
+  --sheet: #fbfaff;
+  --glass: rgb(255 255 255 / 0.72);
+  --glass-strong: rgb(255 255 255 / 0.92);
+  --glass-soft: rgb(255 255 255 / 0.45);
+  --glass-button: rgb(255 255 255 / 0.5);
+  --glass-border: rgb(255 255 255 / 0.92);
+  --field: rgb(255 255 255 / 0.65);
+  --field-solid: #f6f3ff;
+  --ink: #1e1440;
+  --muted: #4e4670;
+  --subtle: #6b6390;
+  --mist: #ece6ff;
+  --lilac: #d9ceff;
+  --line: #e7e1f7;
+  --card-border: #eee9fa;
+  --haze: #f7f4ff;
+  --link: #6a4fe0;
+  --accent: #8b72f5;
+  --inverse: #1e1440;
+  --on-inverse: #ffffff;
+  --danger: #c62828;
+  --danger-soft: #ffe4e4;
+  --success: #1e8f50;
+  --success-soft: #e2f6ea;
+  --warn: #9a6700;
+  --warn-soft: #fff4d1;
+  /* Nav bar: NavTint over a 24dp haze blur. A little denser on the web so text never shows through. */
+  --nav-tint: rgb(255 255 255 / 0.78);
+  --sidebar: rgb(251 250 255 / 0.62);
+  --hover: rgb(112 89 240 / 0.07);
+  --shadow-color: rgb(110 80 220 / 0.16);
+  --soft-base: #ffffff;
+  --soft-amount: 14%;
+  --scrim: rgb(30 20 64 / 0.36);
+  --shimmer-hi: rgb(255 255 255 / 0.85);
+  --selection: rgb(139 114 245 / 0.28);
+  --scrollbar: #cdbfff;
+  --ring: #8b72f5;
+
+  /* Motion: Compose spring / tween equivalents. */
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1); /* FastOutSlowInEasing */
+  /* spring(DampingRatioMediumBouncy, StiffnessMedium) */
+  --spring-bouncy: linear(0, 0.006, 0.025 2.8%, 0.101 6.1%, 0.539 18.9%, 0.721 25.3%, 0.849 31.5%, 0.937 38.1%, 0.968 41.8%, 0.991 45.7%, 1.006 50.1%, 1.015 55%, 1.017 63.9%, 1.001 85.4%, 1);
+  /* spring(dampingRatio 0.75, StiffnessMediumLow): sheets, tab pill, sidebar indicator */
+  --spring-smooth: linear(0, 0.012, 0.048 3.1%, 0.19 6.4%, 0.4 10.4%, 0.6 15%, 0.76 20%, 0.87 25.4%, 0.94 31.4%, 0.98 38%, 1.003 46%, 1.01 54%, 1.006 66%, 1);
+}
+
+@supports not (transition-timing-function: linear(0, 1)) {
+  :root {
+    --spring-bouncy: cubic-bezier(0.34, 1.36, 0.64, 1);
+    --spring-smooth: cubic-bezier(0.22, 1.1, 0.36, 1);
+  }
+}
+
+.dark {
+  --bg: linear-gradient(180deg, #16121f 0%, #07060a 22%, #000000 50%, #000000 100%);
+  --bg-top: #16121f;
+  --auth-bg: linear-gradient(180deg, #1e1830 0%, #0a0910 50%, #000000 100%);
+  --surface: #131218;
+  --sheet: #0e0d12;
+  --glass: rgb(255 255 255 / 0.06);
+  --glass-strong: rgb(21 20 25 / 0.94);
+  --glass-soft: rgb(255 255 255 / 0.04);
+  --glass-button: rgb(255 255 255 / 0.08);
+  --glass-border: rgb(255 255 255 / 0.1);
+  --field: rgb(255 255 255 / 0.06);
+  --field-solid: #1a1920;
+  --ink: #f4f2fa;
+  --muted: #b4b0c3;
+  --subtle: #8a8699;
+  --mist: #1f1d27;
+  --lilac: #3a3550;
+  --line: #26242e;
+  --card-border: #232129;
+  --haze: #000000;
+  --link: #c4b5ff;
+  --accent: #b9a6ff;
+  --inverse: #f4f2fa;
+  --on-inverse: #0e0d12;
+  --danger: #ff8a80;
+  --danger-soft: rgb(255 107 107 / 0.2);
+  --success: #6ee7a8;
+  --success-soft: rgb(46 184 114 / 0.2);
+  --warn: #f5c451;
+  --warn-soft: rgb(245 180 0 / 0.2);
+  --nav-tint: rgb(18 17 22 / 0.9);
+  --sidebar: rgb(10 10 13 / 0.72);
+  --hover: rgb(255 255 255 / 0.06);
+  --shadow-color: rgb(0 0 0 / 0.55);
+  --soft-base: transparent;
+  --soft-amount: 18%;
+  --scrim: rgb(0 0 0 / 0.62);
+  --shimmer-hi: rgb(255 255 255 / 0.07);
+  --selection: rgb(185 166 255 / 0.32);
+  --scrollbar: #33303d;
+  --ring: #b9a6ff;
+}
+
+@theme inline {
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: "Sora", "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  --color-primary: #7059f0;
+  --color-primary-hover: #5f47e6;
+  --color-iris: #8b72f5;
+  --color-lavender: #b9a6ff;
+  --color-k-pdf: #e8402b;
+  --color-k-video: #f59e0b;
+  --color-k-image: #1e9e57;
+  --color-k-doc: #2e64e0;
+  --color-k-audio: #b07800;
+  --color-k-zip: #a23fcf;
+
+  --color-surface: var(--surface);
+  --color-sheet: var(--sheet);
+  --color-glass: var(--glass);
+  --color-glass-strong: var(--glass-strong);
+  --color-glass-soft: var(--glass-soft);
+  --color-glass-button: var(--glass-button);
+  --color-glass-border: var(--glass-border);
+  --color-field: var(--field);
+  --color-field-solid: var(--field-solid);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-subtle: var(--subtle);
+  --color-mist: var(--mist);
+  --color-lilac: var(--lilac);
+  --color-line: var(--line);
+  --color-card-border: var(--card-border);
+  --color-haze: var(--haze);
+  --color-link: var(--link);
+  --color-accent: var(--accent);
+  --color-inverse: var(--inverse);
+  --color-on-inverse: var(--on-inverse);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-warn: var(--warn);
+  --color-warn-soft: var(--warn-soft);
+  --color-hover: var(--hover);
+
+  --shadow-soft: 0 14px 34px -14px var(--shadow-color);
+  --shadow-lift: 0 22px 48px -18px var(--shadow-color);
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+    scrollbar-color: var(--scrollbar) transparent;
+  }
+  body {
+    margin: 0;
+    min-height: 100dvh;
+    background: var(--haze);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: 14px;
+    line-height: 1.45;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+  }
+  button, [role="button"] {
+    cursor: pointer;
+  }
+  button:disabled {
+    cursor: not-allowed;
+  }
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+    border-radius: 12px;
+  }
+  ::selection {
+    background: var(--selection);
+    color: var(--ink);
+  }
+  input, textarea, select {
+    caret-color: var(--accent);
+  }
+  input::placeholder, textarea::placeholder {
+    color: var(--subtle);
+  }
+  /* Thin themed scrollbars (WebKit/Blink; Firefox uses scrollbar-color above). */
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--scrollbar); border-radius: 10px; border: 3px solid transparent; background-clip: padding-box; }
+  ::-webkit-scrollbar-thumb:hover { background-color: var(--lilac); }
+  ::-webkit-scrollbar-corner { background: transparent; }
+}
+
+/* Full-viewport lavender (or near-black) backdrop that never scrolls with the content. */
+.app-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: var(--bg);
+}
+.auth-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: var(--auth-bg);
+}
+
+/* Pastel tile behind a coloured icon: light pastel by day, translucent tint at night (Nd.soft). */
+.soft-tile {
+  background: color-mix(in srgb, var(--k, #8b72f5) var(--soft-amount), var(--soft-base));
+  color: var(--k, #8b72f5);
+}
+
+/* Frosted glass surfaces. */
+.glass {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  -webkit-backdrop-filter: blur(18px) saturate(1.2);
+  backdrop-filter: blur(18px) saturate(1.2);
+}
+.glass-strong {
+  background: var(--glass-strong);
+  border: 1px solid var(--glass-border);
+  -webkit-backdrop-filter: blur(22px) saturate(1.2);
+  backdrop-filter: blur(22px) saturate(1.2);
+}
+/* GlassBottomBar: haze blur + NavTint, gradient hairline border. */
+.nav-glass {
+  background: var(--nav-tint);
+  -webkit-backdrop-filter: blur(24px) saturate(1.4);
+  backdrop-filter: blur(24px) saturate(1.4);
+  border: 1px solid var(--glass-border);
+}
+.dark .nav-glass {
+  border-color: rgb(255 255 255 / 0.09);
+  box-shadow: 0 18px 40px -16px rgb(0 0 0 / 0.8), inset 0 1px 0 rgb(255 255 255 / 0.06);
+}
+.sidebar-glass {
+  background: var(--sidebar);
+  -webkit-backdrop-filter: blur(24px) saturate(1.2);
+  backdrop-filter: blur(24px) saturate(1.2);
+}
+
+/* Diagonal striped fill (kept for the public pages). */
+.striped-fill {
+  background-image: repeating-linear-gradient(135deg, #8b72f5 0 7px, #b9a6ff 7px 14px);
+  background-size: 40px 40px;
+  animation: stripes 1.4s linear infinite;
+}
+@keyframes stripes {
+  to { background-position: 40px 0; }
+}
+
+/* StripedBar: the fill slides in with transform only, and the stripes drift on their own layer. */
+.stripe-track {
+  position: relative;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--mist);
+  isolation: isolate;
+}
+.stripe-fill {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: 999px;
+  transform: translateX(calc(var(--p, 0) * 1% - 100%));
+  transition: transform 1100ms var(--ease-standard);
+}
+.stripe-fill::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 0 -20px;
+  background: linear-gradient(135deg, #8b72f5 25%, #b9a6ff 25%, #b9a6ff 50%, #8b72f5 50%, #8b72f5 75%, #b9a6ff 75%);
+  background-size: 20px 20px;
+  animation: stripe-drift 1.4s linear infinite;
+}
+@keyframes stripe-drift {
+  to { transform: translateX(20px); }
+}
+
+/* Skeleton shimmer: a highlight that sweeps across with transform only. */
+.shimmer {
+  position: relative;
+  overflow: hidden;
+  background: var(--mist);
+  isolation: isolate;
+}
+.shimmer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(100deg, transparent 15%, var(--shimmer-hi) 50%, transparent 85%);
+  animation: shimmer 1.3s linear infinite;
+}
+@keyframes shimmer {
+  to { transform: translateX(100%); }
+}
+
+/* bounceClick / pressScale: quick squeeze on press, springy release. */
+.press {
+  transition:
+    transform 460ms var(--spring-bouncy),
+    background-color 180ms ease,
+    border-color 180ms ease,
+    box-shadow 220ms ease,
+    color 180ms ease,
+    opacity 180ms ease;
+}
+.press:active:not(:disabled):not([aria-disabled="true"]) {
+  transform: scale(0.96);
+  transition-duration: 110ms, 180ms, 180ms, 220ms, 180ms, 180ms;
+  transition-timing-function: var(--ease-out), ease, ease, ease, ease, ease;
+}
+.press-row:active:not(:disabled) { transform: scale(0.98); }
+.press-cell:active:not(:disabled) { transform: scale(0.97); }
+
+/* Desktop hover lift for cards and tiles. */
+@media (hover: hover) and (pointer: fine) {
+  .lift:hover:not(:active) {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lift);
+  }
+}
+
+.rise {
+  animation: rise 420ms var(--ease-out) backwards;
+}
+@keyframes rise {
+  from { opacity: 0; transform: translateY(14px); }
+}
+
+/* AnimatedContent: fadeIn(420) + scaleIn(0.96) when a screen appears. `backwards` so no transform
+   stays on the page afterwards (it would trap fixed-position children). */
+.page-enter {
+  animation: page-in 420ms var(--ease-out) backwards;
+  transform-origin: 50% 120px;
+}
+@keyframes page-in {
+  from { opacity: 0; transform: scale(0.965); }
+}
+
+/* LazyColumn animateItem: list items fade and slide in, one after another. */
+.stagger > * {
+  animation: item-in 380ms var(--ease-out) backwards;
+}
+.stagger > *:nth-child(2) { animation-delay: 30ms; }
+.stagger > *:nth-child(3) { animation-delay: 60ms; }
+.stagger > *:nth-child(4) { animation-delay: 90ms; }
+.stagger > *:nth-child(5) { animation-delay: 120ms; }
+.stagger > *:nth-child(6) { animation-delay: 150ms; }
+.stagger > *:nth-child(7) { animation-delay: 180ms; }
+.stagger > *:nth-child(8) { animation-delay: 210ms; }
+.stagger > *:nth-child(9) { animation-delay: 240ms; }
+.stagger > *:nth-child(10) { animation-delay: 270ms; }
+.stagger > *:nth-child(n + 11) { animation-delay: 300ms; }
+@keyframes item-in {
+  from { opacity: 0; transform: translateY(10px); }
+}
+
+/* Small pops: badges, check marks, scroll-to-top (scaleIn with spring 0.6). */
+.pop-in {
+  animation: pop-in 420ms var(--spring-bouncy) backwards;
+}
+@keyframes pop-in {
+  from { opacity: 0; transform: scale(0.4); }
+}
+/* Theme toggle icon swap. */
+.spin-in {
+  animation: spin-in 520ms var(--spring-bouncy) backwards;
+}
+@keyframes spin-in {
+  from { opacity: 0; transform: rotate(-110deg) scale(0.4); }
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* ---- Bottom tab bar: the selected tab grows into a pill that shows its name. ---- */
+.tab {
+  transition: background-color 260ms ease, color 260ms ease, transform 460ms var(--spring-bouncy), padding 420ms var(--spring-smooth);
+}
+.tab-label {
+  display: grid;
+  grid-template-columns: 0fr;
+  transition: grid-template-columns 460ms var(--spring-smooth);
+}
+.tab-label > span {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+.tab[data-active] .tab-label { grid-template-columns: 1fr; }
+.tab[data-active] .tab-label > span { opacity: 1; transition: opacity 220ms ease 80ms; }
+
+/* ---- Sidebar: one active pill that glides between links. ---- */
+.side-indicator {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  border-radius: 14px;
+  background: color-mix(in srgb, #8b72f5 var(--soft-amount), var(--soft-base));
+  transition: transform 480ms var(--spring-smooth), height 300ms var(--ease-out), opacity 200ms ease;
+  pointer-events: none;
+}
+.dark .side-indicator {
+  background: rgb(185 166 255 / 0.12);
+  box-shadow: inset 0 0 0 1px rgb(185 166 255 / 0.1);
+}
+
+/* ---- Native <dialog>: centred card on wide screens, bottom sheet on phones. ---- */
+dialog.nd-dialog {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  max-width: none;
+  max-height: none;
+  overflow: visible;
+}
+dialog.nd-dialog::backdrop {
+  background: var(--scrim);
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+  animation: fade-in 240ms ease both;
+}
+dialog.nd-dialog[data-closing]::backdrop {
+  animation: fade-out 200ms ease both;
+}
+/* Wide screens: scale in (0.94) like the app's dialogs. */
+dialog.nd-dialog[open] > .dlg {
+  animation: dialog-in 300ms var(--spring-smooth) both;
+}
+dialog.nd-dialog[data-closing] > .dlg {
+  animation: dialog-out 180ms var(--ease-standard) both;
+}
+dialog.nd-dialog[data-variant="drawer"][open] > .dlg {
+  animation: drawer-in 420ms var(--spring-smooth) both;
+}
+dialog.nd-dialog[data-variant="drawer"][data-closing] > .dlg {
+  animation: drawer-out 220ms var(--ease-standard) both;
+}
+@keyframes dialog-in {
+  from { opacity: 0; transform: scale(0.94); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes dialog-out {
+  from { opacity: 1; transform: none; }
+  to { opacity: 0; transform: scale(0.96); }
+}
+@keyframes drawer-in {
+  from { transform: translateX(100%); }
+  to { transform: none; }
+}
+@keyframes drawer-out {
+  from { transform: none; }
+  to { transform: translateX(100%); }
+}
+/* Phones: ModalBottomSheet springs up from the bottom edge. */
+@media (max-width: 639px) {
+  dialog.nd-dialog[open] > .dlg,
+  dialog.nd-dialog[data-variant="drawer"][open] > .dlg {
+    animation: sheet-in 520ms var(--spring-smooth) both;
+  }
+  dialog.nd-dialog[data-closing] > .dlg,
+  dialog.nd-dialog[data-variant="drawer"][data-closing] > .dlg {
+    animation: sheet-out 240ms var(--ease-standard) both;
+  }
+}
+@keyframes sheet-in {
+  from { transform: translateY(100%); }
+  to { transform: none; }
+}
+@keyframes sheet-out {
+  from { transform: none; }
+  to { transform: translateY(100%); }
+}
+@keyframes fade-in {
+  from { opacity: 0; }
+}
+@keyframes fade-out {
+  to { opacity: 0; }
+}
+
+/* Popover menus grow from the button that opened them. */
+.menu-pop {
+  animation: menu-in 200ms var(--ease-out) both;
+  transform-origin: var(--origin, top right);
+}
+@keyframes menu-in {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: none; }
+}
+
+/* Glass toast that drops in from the top (slideInVertically(navSpring) { -it * 2 }). */
+.toast-in {
+  animation: toast-in 560ms var(--spring-bouncy) both;
+}
+.toast-out {
+  animation: toast-out 250ms var(--ease-standard) both;
+}
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(-160%); }
+  40% { opacity: 1; }
+  to { opacity: 1; transform: none; }
+}
+@keyframes toast-out {
+  to { opacity: 0; transform: translateY(-160%); }
+}
+
+/* Viewer: fadeIn + scaleIn(0.94), and a quick cross-fade when paging. */
+.viewer-in {
+  animation: dialog-in 280ms var(--ease-out) both;
+}
+.viewer-swap {
+  animation: fade-in 220ms ease both;
+}
+
+/* Usage rings and progress rings fill smoothly. */
+.ring-arc {
+  transition: stroke-dashoffset 1100ms var(--ease-standard);
+}
+
+/* Free up space: a stream of dots from the full Drive to the other drives while files move. */
+.flow-dot {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 10px;
+  height: 10px;
+  margin: -5px 0 0 -5px;
+  border-radius: 9999px;
+  background: var(--color-iris);
+  animation: flow-dot 1400ms linear infinite;
+}
+@keyframes flow-dot {
+  0% { left: 0%; opacity: 0.25; transform: scale(0.6); }
+  50% { opacity: 1; transform: scale(1); }
+  100% { left: 100%; opacity: 0.25; transform: scale(0.6); }
+}
+
+/* ---- Light/dark circular reveal (ThemeReveal) via the View Transitions API. ---- */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+::view-transition-old(root) { z-index: 1; }
+::view-transition-new(root) { z-index: 2; }
+/* Fallback cross-fade when the API is missing. */
+html.theme-fade,
+html.theme-fade *,
+html.theme-fade *::before,
+html.theme-fade *::after {
+  transition: background-color 320ms ease, border-color 320ms ease, color 320ms ease, fill 320ms ease, stroke 320ms ease !important;
+}
+
+/* Long-form legal / markdown text. */
+.prose-nd {
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.7;
+}
+.prose-nd h1 { color: var(--ink); font-size: 30px; line-height: 1.2; margin: 0 0 12px; font-weight: 700; }
+.prose-nd h2 { color: var(--ink); font-size: 21px; line-height: 1.3; margin: 34px 0 10px; font-weight: 600; }
+.prose-nd h3 { color: var(--ink); font-size: 17px; margin: 24px 0 8px; font-weight: 600; }
+.prose-nd p { margin: 0 0 14px; }
+.prose-nd ul, .prose-nd ol { margin: 0 0 14px; padding-left: 22px; }
+.prose-nd ul { list-style: disc; }
+.prose-nd ol { list-style: decimal; }
+.prose-nd li { margin: 4px 0; }
+.prose-nd a { color: var(--link); text-decoration: underline; text-underline-offset: 3px; }
+.prose-nd strong { color: var(--ink); font-weight: 600; }
+.prose-nd code { background: var(--mist); color: var(--ink); padding: 1px 6px; border-radius: 6px; font-size: 0.92em; }
+.prose-nd hr { border: 0; border-top: 1px solid var(--line); margin: 28px 0; }
+.prose-nd blockquote { margin: 0 0 14px; padding: 10px 16px; border-left: 3px solid var(--accent); background: var(--glass-soft); border-radius: 0 12px 12px 0; }
+.prose-nd table { width: 100%; border-collapse: collapse; margin: 0 0 16px; font-size: 14px; }
+.prose-nd th, .prose-nd td { border: 1px solid var(--line); padding: 8px 10px; text-align: left; vertical-align: top; }
+.prose-nd th { color: var(--ink); background: var(--glass-soft); }
+
+/* Rendered Word / Google Docs HTML inside the viewer keeps its own light page colours. */
+.doc-page img { max-width: 100%; height: auto; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    animation-delay: 0ms !important;
+    transition-duration: 1ms !important;
+    transition-delay: 0ms !important;
+  }
+  .press:active:not(:disabled) { transform: none; }
+}

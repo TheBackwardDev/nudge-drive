@@ -1,0 +1,65 @@
+<!doctype html>
+<!--
+  Host page for the desktop app's in-app editor (Collabora Online over WOPI).
+  Served by Caddy at https://<your domain>/editor-host.html (see Caddyfile).
+
+  The desktop app opens: /editor-host.html#url=<editor url>&token=<access token>&ttl=<ms>&bg=<#RRGGBB>
+  The values are in the URL fragment, so they are never sent to any server. This page POSTs the
+  token into the editor iframe (the same way the web app and the Android app do), relays the
+  editor's postMessage events to the app (window.NudgeHost, injected by the app), and exposes
+  window.nudgePost(message) so the app can send commands such as Action_Save to the editor.
+-->
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>Editor</title>
+<style>
+  html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #ffffff; }
+  form { display: none; }
+  iframe { position: fixed; inset: 0; width: 100%; height: 100%; border: 0; display: block; }
+</style>
+</head>
+<body>
+<form id="f" method="post" target="ed">
+  <input type="hidden" name="access_token" id="access_token">
+  <input type="hidden" name="access_token_ttl" id="access_token_ttl">
+</form>
+<iframe name="ed" id="ed" allow="clipboard-read; clipboard-write; fullscreen"></iframe>
+<script>
+(function () {
+  // Java's URLEncoder writes spaces as "+".
+  function param(name) {
+    var parts = location.hash.replace(/^#/, '').split('&');
+    for (var i = 0; i < parts.length; i++) {
+      var kv = parts[i].split('=');
+      if (kv[0] === name) return decodeURIComponent((kv.slice(1).join('=') || '').replace(/\+/g, ' '));
+    }
+    return '';
+  }
+  var url = param('url'), token = param('token'), ttl = param('ttl'), bg = param('bg');
+  // Drop the token from the address bar and history as soon as it has been read.
+  try { history.replaceState(null, '', location.pathname); } catch (e) {}
+  if (/^#[0-9a-fA-F]{6}$/.test(bg)) document.documentElement.style.background = document.body.style.background = bg;
+  if (!/^https?:\/\//i.test(url) || !token) return;
+
+  var editorOrigin = new URL(url).origin;
+  window.addEventListener('message', function (e) {
+    if (e.origin !== editorOrigin) return;
+    try { window.NudgeHost.onMessage(typeof e.data === 'string' ? e.data : JSON.stringify(e.data)); } catch (x) {}
+  });
+  window.nudgePost = function (m) {
+    var f = document.getElementById('ed');
+    if (f && f.contentWindow) f.contentWindow.postMessage(m, editorOrigin);
+  };
+
+  var form = document.getElementById('f');
+  form.action = url;
+  document.getElementById('access_token').value = token;
+  document.getElementById('access_token_ttl').value = ttl;
+  form.submit();
+})();
+</script>
+</body>
+</html>

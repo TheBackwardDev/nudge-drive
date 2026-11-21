@@ -1,0 +1,75 @@
+# Builds Nudge Drive for Windows (MSI + EXE installers) and macOS (DMG) on GitHub's machines.
+# Run it from the Actions tab ("Run workflow"), or push a tag like desktop-v1.0.0 (Windows only).
+name: Desktop installers
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version number (e.g. 1.0.1)"
+        required: true
+        default: "1.0.0"
+      macos:
+        description: "Also build the macOS app"
+        type: boolean
+        default: false
+  push:
+    tags: ["desktop-v*"]
+
+permissions:
+  contents: read
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Version
+        shell: bash
+        run: |
+          V="${{ github.event.inputs.version }}"
+          if [ -z "$V" ]; then V="${GITHUB_REF_NAME#desktop-v}"; fi
+          echo "VERSION=$V" >> "$GITHUB_ENV"
+      - name: Build installers
+        # Quoted: PowerShell would otherwise split "-PdesktopVersion=1.0.0" at the first dot.
+        working-directory: apps
+        run: ./gradlew.bat :desktop:packageReleaseMsi :desktop:packageReleaseExe "-PdesktopVersion=${{ env.VERSION }}" --no-daemon --console=plain
+      - uses: actions/upload-artifact@v4
+        with:
+          name: NudgeDrive-Windows-${{ env.VERSION }}
+          path: |
+            apps/desktop/build/compose/binaries/main-release/msi/*.msi
+            apps/desktop/build/compose/binaries/main-release/exe/*.exe
+          if-no-files-found: error
+
+  macos:
+    # Mac runners use 10x the free Actions minutes on private repos, so only when asked for.
+    if: github.event.inputs.macos == 'true'
+    runs-on: macos-14
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Version
+        run: |
+          V="${{ github.event.inputs.version }}"
+          if [ -z "$V" ]; then V="${GITHUB_REF_NAME#desktop-v}"; fi
+          echo "VERSION=$V" >> "$GITHUB_ENV"
+      - name: Build DMG
+        working-directory: apps
+        run: ./gradlew :desktop:packageReleaseDmg -PdesktopVersion=${{ env.VERSION }} --no-daemon --console=plain
+      - uses: actions/upload-artifact@v4
+        with:
+          name: NudgeDrive-macOS-${{ env.VERSION }}
+          path: apps/desktop/build/compose/binaries/main-release/dmg/*.dmg
+          if-no-files-found: error

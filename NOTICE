@@ -1,0 +1,28 @@
+Nudge Drive
+Copyright 2026 The Nudge Drive contributors
+
+Portions of the backend, Docker setup and setup scripts are derived from
+earlier work Copyright 2026 Zenhosta, licensed under the Apache License,
+Version 2.0. Those files have been modified. Major changes made by the
+Nudge Drive contributors include:
+
+- A largely rewritten web app (new design, home page, photo timeline, drives,
+  free up space, notifications, activity, landing and legal pages, PWA).
+- New native apps: an Android app and a Windows / macOS desktop app built
+  with Kotlin and Compose Multiplatform (apps/).
+- Free up space: moving files off a full Google Drive to other drives, and
+  copying Google Photos out through the Google Photos Picker API.
+- Automatic import of existing Google Drive files when a drive is connected,
+  and a Drive sync that tracks missing files separately from the trash.
+- Resumable (chunked) uploads, upload session tracking and an hourly recovery
+  sweep for uploads that never finished.
+- In-app document editing with Collabora Online over WOPI.
+- Native Google sign-in for Android and loopback sign-in for desktop.
+- Email verification and account deletion, admin-only server settings
+  (ADMIN_EMAILS), fast thumbnails and document previews.
+- Production deployment with Caddy (automatic HTTPS) in front of the stack.
+
+Third-party components keep their own licenses. In particular, the Inter and
+Sora fonts bundled with the apps are licensed under the SIL Open Font License
+1.1, and the npm and Gradle dependencies are listed in frontend/package.json,
+backend/package.json and the apps/ Gradle build files.

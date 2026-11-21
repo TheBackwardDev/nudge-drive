@@ -1,0 +1,42 @@
+# Dependencies and build output
+node_modules/
+dist/
+build/
+.gradle/
+.kotlin/
+*.log
+.DS_Store
+
+# Secrets and local config: never commit these
+.env
+.env.local
+.env.*.local
+**/.env
+!.env.docker.example
+keystore.properties
+*.jks
+*.keystore
+local.properties
+google-services.json
+
+# Databases and backups
+*.db
+*.db-journal
+*.sql.gz
+backups/
+
+# Your own copies of the deployment files in static/ (examples are committed)
+static/assetlinks.json
+
+# Release binaries
+*.apk
+*.aab
+*.exe
+*.msi
+*.dmg
+
+# Editors and tools
+.idea/
+.vscode/
+*.iml
+.claude/

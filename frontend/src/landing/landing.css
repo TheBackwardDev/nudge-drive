@@ -1,0 +1,782 @@
+/* ------------------------------------------------------------------------------------------------
+   Landing page only (loaded with the lazy LandingPage chunk). Everything is scoped under .ld-root
+   and reads the shared theme tokens (--ink, --muted, …) without redefining them.
+   ------------------------------------------------------------------------------------------------ */
+
+@layer components {
+
+
+.ld-root {
+  --ld-bg: #f7f4ff;
+  --ld-card: rgb(255 255 255 / 0.78);
+  --ld-card-solid: #ffffff;
+  --ld-card-border: rgb(255 255 255 / 0.95);
+  --ld-card-shadow: 0 30px 60px -30px rgb(110 80 220 / 0.35), 0 2px 6px -2px rgb(110 80 220 / 0.08);
+  --ld-hairline: rgb(30 20 64 / 0.08);
+  --ld-glow-a: rgb(185 166 255 / 0.65);
+  --ld-glow-b: rgb(112 89 240 / 0.28);
+  --ld-chip: rgb(255 255 255 / 0.93);
+  --ld-chip-border: rgb(255 255 255 / 1);
+  --ld-ink-soft: rgb(30 20 64 / 0.06);
+  --ld-metal-a: #c9c5d6;
+  --ld-metal-b: #a9a4ba;
+  --ld-deck-a: #ece9f4;
+  --ld-deck-b: #d6d2e2;
+  --ld-key: #f9f8fc;
+  --ld-well: #c8c3d6;
+  --ld-shadow-ink: 30 20 64;
+  --ld-screen-dim: 1;
+  position: relative;
+  isolation: isolate;
+  min-height: 100dvh;
+  overflow-x: clip;
+  background: var(--ld-bg);
+  color: var(--ink);
+}
+.dark .ld-root {
+  --ld-bg: #000000;
+  --ld-card: rgb(19 18 24 / 0.88);
+  --ld-card-solid: #0e0d12;
+  --ld-card-border: rgb(255 255 255 / 0.08);
+  --ld-card-shadow: 0 30px 60px -30px rgb(0 0 0 / 0.9);
+  --ld-hairline: rgb(255 255 255 / 0.08);
+  --ld-glow-a: rgb(112 89 240 / 0.34);
+  --ld-glow-b: rgb(139 114 245 / 0.16);
+  --ld-chip: rgb(21 20 26 / 0.94);
+  --ld-chip-border: rgb(255 255 255 / 0.1);
+  --ld-ink-soft: rgb(255 255 255 / 0.05);
+  --ld-metal-a: #3a3846;
+  --ld-metal-b: #23222b;
+  --ld-deck-a: #2a2833;
+  --ld-deck-b: #18171d;
+  --ld-key: #121117;
+  --ld-well: #0c0b10;
+  --ld-shadow-ink: 0 0 0;
+  --ld-screen-dim: 0.93;
+}
+
+html:has(.ld-root) {
+  scroll-behavior: smooth;
+  scroll-padding-top: 84px;
+}
+@media (prefers-reduced-motion: reduce) {
+  html:has(.ld-root) { scroll-behavior: auto; }
+}
+
+.ld-root section,
+.ld-root footer {
+  transition: background-color 400ms ease, color 400ms ease;
+}
+
+/* Skip link */
+.ld-skip {
+  position: absolute;
+  left: 16px;
+  top: -60px;
+  z-index: 60;
+  padding: 10px 16px;
+  border-radius: 14px;
+  background: var(--inverse);
+  color: var(--on-inverse);
+  font-weight: 700;
+  transition: top 160ms;
+}
+.ld-skip:focus { top: 12px; }
+
+/* ---------------------------------------------------------------- Header */
+.ld-header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  border-bottom: 1px solid transparent;
+  transition: background-color 300ms ease, border-color 300ms ease, box-shadow 300ms ease;
+}
+.ld-header.is-scrolled {
+  background: var(--nav-tint);
+  border-bottom-color: var(--ld-hairline);
+  -webkit-backdrop-filter: blur(18px) saturate(1.4);
+  backdrop-filter: blur(18px) saturate(1.4);
+}
+.ld-navlink {
+  position: relative;
+  padding: 8px 12px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--muted);
+  transition: color 160ms, background-color 160ms;
+}
+.ld-navlink:hover { color: var(--ink); background: var(--ld-ink-soft); }
+
+/* ---------------------------------------------------------------- Backgrounds */
+.ld-hero {
+  position: relative;
+  isolation: isolate;
+  margin-top: -64px;
+  padding-top: 64px;
+  background:
+    radial-gradient(60% 50% at 78% 18%, var(--ld-glow-a), transparent 70%),
+    radial-gradient(50% 40% at 10% 0%, var(--ld-glow-b), transparent 70%),
+    linear-gradient(180deg, #d9ceff 0%, #ebe5ff 34%, var(--ld-bg) 100%);
+}
+.dark .ld-hero {
+  background:
+    radial-gradient(55% 45% at 75% 20%, var(--ld-glow-a), transparent 70%),
+    radial-gradient(45% 35% at 8% 0%, var(--ld-glow-b), transparent 70%),
+    linear-gradient(180deg, #16121f 0%, #07060a 40%, #000 100%);
+}
+.ld-hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 180px;
+  z-index: -1;
+  pointer-events: none;
+  background: linear-gradient(rgb(0 0 0 / 0), var(--ld-bg));
+}
+.ld-grid-bg {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    linear-gradient(var(--ld-hairline) 1px, transparent 1px),
+    linear-gradient(90deg, var(--ld-hairline) 1px, transparent 1px);
+  background-size: 56px 56px;
+  -webkit-mask-image: radial-gradient(70% 60% at 50% 30%, #000 10%, transparent 75%);
+  mask-image: radial-gradient(70% 60% at 50% 30%, #000 10%, transparent 75%);
+  opacity: 0.6;
+}
+
+.ld-gradient-text {
+  background: linear-gradient(100deg, #7059f0 0%, #9d84ff 35%, #c2b2ff 50%, #8b72f5 65%, #7059f0 100%);
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.dark .ld-gradient-text {
+  background-image: linear-gradient(100deg, #9d84ff 0%, #c4b5ff 35%, #e4dcff 50%, #b9a6ff 65%, #9d84ff 100%);
+}
+
+.ld-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px 6px 6px;
+  border-radius: 999px;
+  background: var(--ld-chip);
+  border: 1px solid var(--ld-chip-border);
+  box-shadow: 0 8px 24px -14px rgb(var(--ld-shadow-ink) / 0.35);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.ld-card {
+  background: var(--ld-card);
+  border: 1px solid var(--ld-card-border);
+  box-shadow: var(--ld-card-shadow);
+  border-radius: 28px;
+}
+
+/* ---------------------------------------------------------------- Scroll reveal */
+.ld-js .ld-reveal {
+  transition:
+    opacity 900ms cubic-bezier(0.2, 0.7, 0.2, 1) var(--d, 0ms),
+    translate 900ms cubic-bezier(0.2, 0.7, 0.2, 1) var(--d, 0ms),
+    scale 900ms cubic-bezier(0.2, 0.7, 0.2, 1) var(--d, 0ms);
+}
+.ld-js .ld-reveal:not(.is-in) {
+  opacity: 0;
+  translate: 0 28px;
+}
+.ld-js .ld-reveal.ld-zoom:not(.is-in) {
+  translate: 0 40px;
+  scale: 0.96;
+}
+
+/* ---------------------------------------------------------------- Device: phone
+   Sized in em: the phone is 100em wide, so `font-size` on it (or a parent) sets its width. */
+.ld-phone {
+  position: relative;
+  width: 100em;
+  aspect-ratio: 100 / 215.9;
+  transform-style: preserve-3d;
+}
+.ld-phone-body {
+  position: absolute;
+  inset: 0;
+  padding: 0.75em;
+  border-radius: 14.5em;
+  background: linear-gradient(155deg, #6c6a7a 0%, #2b2a33 22%, #1a1920 55%, #3d3b48 85%, #77748a 100%);
+  box-shadow:
+    0 4em 9em -3em rgb(var(--ld-shadow-ink) / 0.45),
+    0 1.5em 3em -1.5em rgb(var(--ld-shadow-ink) / 0.35);
+}
+.ld-phone-glass {
+  position: relative;
+  height: 100%;
+  padding: 1.9em;
+  border-radius: 13.8em;
+  background: #050507;
+  box-shadow: inset 0 0 0 0.18em rgb(255 255 255 / 0.07);
+}
+.ld-phone-screen {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 11.9em;
+  background: #ebe5ff;
+}
+.ld-phone-screen img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(var(--ld-screen-dim));
+}
+.ld-phone-cam {
+  position: absolute;
+  z-index: 3;
+  top: 4.3em;
+  left: 50%;
+  width: 3.3em;
+  height: 3.3em;
+  margin-left: -1.65em;
+  border-radius: 50%;
+  background: radial-gradient(circle at 38% 36%, #39476a 0 14%, #0c0d14 34%, #000 70%);
+  box-shadow: 0 0 0 0.35em #000;
+}
+.ld-glare {
+  position: absolute;
+  inset: -20%;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(118deg, rgb(255 255 255 / 0.24) 0%, rgb(255 255 255 / 0.06) 28%, rgb(255 255 255 / 0) 42%);
+}
+.ld-phone-depth {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+}
+.ld-phone-depth i {
+  position: absolute;
+  background: linear-gradient(90deg, #2a2933, #5d5a6c 45%, #23222b);
+}
+.ld-edge-l, .ld-edge-r { top: 14em; bottom: 14em; width: 6.4em; }
+.ld-edge-t, .ld-edge-b { left: 14em; right: 14em; height: 6.4em; background: linear-gradient(#2a2933, #5d5a6c 45%, #23222b) !important; }
+.ld-edge-l { left: 0; transform-origin: 0 50%; transform: rotateY(90deg); }
+.ld-edge-r { right: 0; transform-origin: 100% 50%; transform: rotateY(-90deg); }
+.ld-edge-t { top: 0; transform-origin: 50% 0; transform: rotateX(-90deg); }
+.ld-edge-b { bottom: 0; transform-origin: 50% 100%; transform: rotateX(90deg); }
+.ld-phone-btn {
+  position: absolute;
+  right: -0.55em;
+  width: 0.9em;
+  border-radius: 0.5em;
+  background: linear-gradient(90deg, #2a2933, #6b6879);
+  transform: translateZ(-3.2em);
+}
+
+/* ---------------------------------------------------------------- Device: laptop
+   100em = lid width. */
+.ld-laptop {
+  position: relative;
+  width: 100em;
+  aspect-ratio: 100 / 65.4;
+  transform-style: preserve-3d;
+}
+.ld-laptop-lid {
+  position: absolute;
+  inset: 0;
+  padding: 2em 2em 3.4em;
+  border-radius: 3.4em 3.4em 1.4em 1.4em;
+  background: #0b0b0f;
+  box-shadow:
+    inset 0 0 0 0.35em var(--ld-metal-b),
+    inset 0 0 0 0.55em #050507,
+    0 3em 6em -2.5em rgb(var(--ld-shadow-ink) / 0.4);
+  transform-origin: 50% 100%;
+  transform: rotateX(var(--lid, 0deg));
+}
+.ld-laptop-screen {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 0.9em;
+  background: #ebe5ff;
+}
+.dark .ld-laptop-screen { background: #0e0d12; }
+.ld-laptop-screen img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top left;
+  transition: opacity 500ms ease;
+}
+.ld-laptop-cam {
+  position: absolute;
+  top: 0.75em;
+  left: 50%;
+  width: 0.7em;
+  height: 0.7em;
+  margin-left: -0.35em;
+  border-radius: 50%;
+  background: #1d2233;
+}
+.ld-laptop-chin {
+  position: absolute;
+  left: 50%;
+  bottom: 1.05em;
+  width: 12em;
+  height: 1.2em;
+  margin-left: -6em;
+  border-radius: 0.6em;
+  background: linear-gradient(#141419, #0b0b0f);
+}
+.ld-laptop-base {
+  position: absolute;
+  top: 100%;
+  left: -8em;
+  width: 116em;
+  height: 70em;
+  border-radius: 1em 1em 5em 5em;
+  background: linear-gradient(180deg, var(--ld-deck-b) 0%, var(--ld-deck-a) 8%, var(--ld-deck-a) 70%, var(--ld-deck-b) 100%);
+  transform-origin: 50% 0;
+  transform: rotateX(90deg);
+  transform-style: preserve-3d;
+  box-shadow: 0 0 0 0.25em var(--ld-metal-a) inset;
+}
+.ld-laptop-keys {
+  position: absolute;
+  left: 50%;
+  top: 6em;
+  width: 90em;
+  height: 31em;
+  margin-left: -45em;
+  border-radius: 1.4em;
+  background: var(--ld-well);
+  padding: 1em;
+}
+.ld-laptop-keys::before {
+  content: "";
+  position: absolute;
+  inset: 1em;
+  background: var(--ld-key);
+  -webkit-mask:
+    linear-gradient(90deg, #000 82%, transparent 82%) 0 0 / 6.2em 100%,
+    linear-gradient(#000 80%, transparent 80%) 0 0 / 100% 5.8em;
+  -webkit-mask-composite: source-in;
+  mask:
+    linear-gradient(90deg, #000 82%, transparent 82%) 0 0 / 6.2em 100%,
+    linear-gradient(#000 80%, transparent 80%) 0 0 / 100% 5.8em;
+  mask-composite: intersect;
+}
+.ld-laptop-pad {
+  position: absolute;
+  left: 50%;
+  top: 41em;
+  width: 40em;
+  height: 24em;
+  margin-left: -20em;
+  border-radius: 2em;
+  background: linear-gradient(180deg, var(--ld-deck-b), var(--ld-deck-a));
+  box-shadow: inset 0 0 0 0.2em rgb(var(--ld-shadow-ink) / 0.08);
+}
+.ld-laptop-lip {
+  position: absolute;
+  left: 2.5em;
+  right: 2.5em;
+  top: 100%;
+  height: 2.6em;
+  border-radius: 0 0 2em 2em;
+  background: linear-gradient(180deg, var(--ld-metal-a), var(--ld-metal-b));
+  transform-origin: 50% 0;
+  transform: rotateX(-90deg);
+}
+
+
+/* Flat (2D) laptop for sections where the base is not needed. */
+.ld-laptop--flat .ld-laptop-base { display: none; }
+.ld-laptop-stand {
+  height: 2.2em;
+  margin: 0 -7em;
+  border-radius: 0.4em 0.4em 3em 3em;
+  background: linear-gradient(180deg, var(--ld-metal-a), var(--ld-metal-b));
+  box-shadow: 0 2.5em 4em -1.5em rgb(var(--ld-shadow-ink) / 0.4);
+  position: relative;
+}
+.ld-laptop-stand::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 16em;
+  height: 0.9em;
+  margin-left: -8em;
+  border-radius: 0 0 1em 1em;
+  background: rgb(var(--ld-shadow-ink) / 0.18);
+}
+
+/* ---------------------------------------------------------------- Hero 3D stage */
+.ld-stage-wrap {
+  position: relative;
+  container-type: inline-size;
+  aspect-ratio: 100 / 76;
+  width: 100%;
+}
+.ld-stage {
+  position: absolute;
+  inset: 0;
+  font-size: 1cqw; /* 1em = 1% of the stage width */
+  perspective: 170em;
+  perspective-origin: 50% 35%;
+}
+.ld-enter,
+.ld-rig {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+}
+.ld-rig {
+  transform: rotateX(-10deg) rotateY(-12deg);
+  will-change: transform;
+}
+.ld-js .ld-enter {
+  animation: ld-enter 1500ms cubic-bezier(0.16, 0.84, 0.24, 1) 120ms both;
+}
+@keyframes ld-enter {
+  from { translate: 0 14em -30em; rotate: x -24deg; }
+  to { translate: 0 0 0; rotate: x 0deg; }
+}
+.ld-js .ld-stage-wrap {
+  animation: ld-fade 900ms ease 120ms both;
+}
+@keyframes ld-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.ld-obj {
+  position: absolute;
+  transform-style: preserve-3d;
+}
+.ld-float {
+  transform-style: preserve-3d;
+  animation: ld-float 7s ease-in-out infinite alternate;
+}
+.ld-float--slow { animation-duration: 9s; animation-delay: -3s; }
+.ld-paused .ld-float { animation-play-state: paused; }
+.ld-float--fast { animation-duration: 5.5s; animation-delay: -1.5s; }
+@keyframes ld-float {
+  from { translate: 0 -0.9em 0; }
+  to { translate: 0 0.9em 0; }
+}
+.ld-hero-laptop { left: 2em; top: 8em; transform: translateZ(-6em); }
+.ld-hero-laptop .ld-laptop { --lid: 12deg; }
+.ld-hero-laptop-dev { font-size: 0.84em; }
+.ld-hero-phone { left: 73em; top: 21em; transform: translateZ(14em) rotateY(-6deg) rotateZ(2deg); }
+.ld-hero-phone .ld-phone { font-size: 0.245em; }
+.ld-hero-chip { transform: translateZ(26em); }
+.ld-hero-chip--pool { left: 22em; top: 65em; transform: translateZ(30em); }
+.ld-hero-chip--nearby { left: 60em; top: 0em; transform: translateZ(22em); }
+.ld-hero-chip--rule { left: 4em; top: 28em; transform: translateZ(18em); }
+@media (max-width: 1023px) {
+  .ld-stage-wrap { aspect-ratio: 100 / 82; }
+  .ld-hero-chip .ld-chip3d { font-size: 1.55em; }
+  .ld-hero-laptop { left: 0em; top: 9em; }
+  .ld-hero-laptop-dev { font-size: 0.84em; }
+  .ld-hero-phone { left: 70em; top: 21em; }
+  .ld-hero-phone .ld-phone { font-size: 0.27em; }
+  .ld-hero-chip--pool { left: 9em; top: 65em; }
+  .ld-hero-chip--nearby { left: 24em; top: -1em; }
+  .ld-hero-chip--rule { display: none; }
+}
+
+/* Small glass cards floating in the scene (sizes in stage em). */
+.ld-chip3d {
+  display: flex;
+  align-items: center;
+  gap: 1.3em;
+  padding: 1.4em 2em 1.4em 1.4em;
+  border-radius: 2.4em;
+  background: var(--ld-chip);
+  border: 0.12em solid var(--ld-chip-border);
+  box-shadow: 0 1.4em 2.6em -1.4em rgb(var(--ld-shadow-ink) / 0.5);
+  color: var(--ink);
+  white-space: nowrap;
+}
+.ld-chip3d-icon {
+  display: grid;
+  place-items: center;
+  width: 4.2em;
+  height: 4.2em;
+  border-radius: 1.3em;
+  flex: none;
+}
+.ld-chip3d-k { font-size: 1.45em; font-weight: 600; color: var(--muted); line-height: 1.2; }
+.ld-chip3d-v { font-family: var(--font-display); font-size: 2.1em; font-weight: 700; letter-spacing: -0.02em; line-height: 1.15; }
+.ld-chip3d-bar {
+  margin-top: 0.9em;
+  width: 17em;
+  height: 0.9em;
+  border-radius: 1em;
+  background: var(--mist);
+  overflow: hidden;
+}
+.ld-chip3d-bar > span {
+  display: block;
+  height: 100%;
+  width: 46%;
+  border-radius: inherit;
+  background-image: repeating-linear-gradient(135deg, #8b72f5 0 0.6em, #b9a6ff 0.6em 1.2em);
+}
+
+/* ---------------------------------------------------------------- Showcase (sticky phone) */
+.ld-show-step {
+  min-height: 74vh;
+  display: flex;
+  align-items: center;
+}
+.ld-show-step .ld-show-copy {
+  transition: opacity 500ms ease;
+}
+@media (min-width: 1024px) {
+  .ld-show-step:not(.is-active) .ld-show-copy { opacity: 0.38; }
+}
+.ld-show-sticky {
+  position: sticky;
+  top: max(84px, calc(50vh - var(--ph) * 108 - 30px));
+  --ph: min(3.1px, calc((100vh - 190px) / 216));
+}
+.ld-show-phone {
+  font-size: var(--ph); /* phone = 100em wide */
+  transition: transform 900ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.ld-show-screen {
+  opacity: 0;
+  scale: 1.04;
+  transition: opacity 600ms ease, scale 900ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.ld-show-screen.is-active { opacity: 1; scale: 1; }
+.ld-show-glow {
+  position: absolute;
+  inset: 8% -18%;
+  z-index: -1;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, var(--k, #7059f0), transparent);
+  opacity: 0.35;
+  transition: background 800ms ease;
+}
+.dark .ld-show-glow { opacity: 0.3; }
+.ld-dots button {
+  width: 8px;
+  height: 8px;
+  border-radius: 99px;
+  background: var(--lilac);
+  transition: width 300ms ease, background-color 300ms ease;
+}
+.ld-dots button[aria-current="true"] { width: 26px; background: var(--color-primary, #7059f0); }
+
+/* ---------------------------------------------------------------- Bento cards */
+.ld-bento {
+  position: relative;
+  overflow: hidden;
+  border-radius: 32px;
+  background: var(--ld-card);
+  border: 1px solid var(--ld-card-border);
+  box-shadow: var(--ld-card-shadow);
+}
+.ld-bento-phone {
+  position: relative;
+  margin: 0 auto;
+  width: max-content;
+  font-size: 2.6px;
+  margin-bottom: -210px;
+}
+.ld-rings {
+  position: absolute;
+  left: 50%;
+  top: 46%;
+  width: 0;
+  height: 0;
+  z-index: 0;
+}
+.ld-rings i {
+  position: absolute;
+  left: -160px;
+  top: -160px;
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  border: 2px solid rgb(112 89 240 / 0.55);
+  animation: ld-ring 3.6s cubic-bezier(0.2, 0.6, 0.3, 1) infinite;
+  opacity: 0;
+}
+.ld-rings i:nth-child(2) { animation-delay: 1.2s; }
+.ld-rings i:nth-child(3) { animation-delay: 2.4s; }
+@keyframes ld-ring {
+  0% { scale: 0.35; opacity: 0; }
+  15% { opacity: 1; }
+  100% { scale: 1.9; opacity: 0; }
+}
+.ld-float-chip {
+  position: absolute;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px 8px 8px;
+  border-radius: 16px;
+  background: var(--ld-chip);
+  border: 1px solid var(--ld-chip-border);
+  box-shadow: 0 14px 30px -14px rgb(var(--ld-shadow-ink) / 0.45);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  white-space: nowrap;
+  animation: ld-bob 6s ease-in-out infinite alternate;
+}
+@keyframes ld-bob {
+  from { translate: 0 -5px; }
+  to { translate: 0 5px; }
+}
+
+/* ---------------------------------------------------------------- Pool diagram (how it works) */
+.ld-pool-bar {
+  display: flex;
+  gap: 4px;
+  height: 14px;
+  border-radius: 99px;
+  overflow: hidden;
+  background: var(--mist);
+}
+.ld-pool-bar > span {
+  border-radius: 99px;
+  transition: flex-grow 1200ms cubic-bezier(0.2, 0.8, 0.2, 1) 300ms;
+  flex-grow: 0.0001;
+}
+.is-in .ld-pool-bar > span { flex-grow: 1; }
+/* One drive's used space (Free up space section): fills to --w when revealed. */
+.ld-meter {
+  height: 10px;
+  border-radius: 99px;
+  overflow: hidden;
+  background: var(--mist);
+}
+.ld-meter > span {
+  display: block;
+  height: 100%;
+  width: 0;
+  border-radius: 99px;
+  transition: width 1200ms cubic-bezier(0.2, 0.8, 0.2, 1) 300ms;
+}
+.is-in .ld-meter > span { width: var(--w); }
+.ld-flow-line {
+  stroke-dasharray: 6 8;
+  animation: ld-dash 1.4s linear infinite;
+}
+@keyframes ld-dash { to { stroke-dashoffset: -28; } }
+
+/* ---------------------------------------------------------------- Desktop section */
+.ld-desk {
+  perspective: 2400px;
+}
+.ld-desk-rig {
+  transform-origin: 50% 100%;
+  will-change: transform;
+}
+
+/* ---------------------------------------------------------------- FAQ */
+.ld-faq details {
+  border-bottom: 1px solid var(--ld-hairline);
+}
+.ld-faq summary {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 22px 4px;
+  cursor: pointer;
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--ink);
+  border-radius: 12px;
+}
+.ld-faq summary::-webkit-details-marker { display: none; }
+.ld-faq summary .ld-faq-icon {
+  margin-left: auto;
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--ld-ink-soft);
+  transition: rotate 300ms cubic-bezier(0.2, 0.8, 0.2, 1), background-color 200ms;
+}
+.ld-faq details[open] .ld-faq-icon { rotate: 45deg; background: rgb(112 89 240 / 0.15); color: var(--link); }
+.ld-faq details::details-content {
+  block-size: 0;
+  overflow: hidden;
+  transition: block-size 380ms cubic-bezier(0.2, 0.8, 0.2, 1), content-visibility 380ms allow-discrete;
+}
+.ld-faq details[open]::details-content { block-size: auto; }
+.ld-faq { interpolate-size: allow-keywords; }
+
+/* ---------------------------------------------------------------- CTA */
+.ld-cta {
+  position: relative;
+  overflow: hidden;
+  border-radius: 40px;
+  background: linear-gradient(135deg, #5b44e0 0%, #7059f0 40%, #9d84ff 100%);
+  color: #fff;
+}
+.ld-cta::before,
+.ld-cta::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(40px);
+  animation: ld-orb 14s ease-in-out infinite alternate;
+}
+.ld-cta::before { width: 420px; height: 420px; left: -120px; top: -180px; background: rgb(255 255 255 / 0.22); }
+.ld-cta::after { width: 360px; height: 360px; right: -100px; bottom: -200px; background: rgb(30 20 64 / 0.35); animation-delay: -7s; }
+@keyframes ld-orb {
+  from { translate: 0 0; }
+  to { translate: 60px 40px; }
+}
+
+/* ---------------------------------------------------------------- Reduced motion: hold everything still */
+@media (prefers-reduced-motion: reduce) {
+  .ld-root *,
+  .ld-root *::before,
+  .ld-root *::after {
+    animation: none !important;
+  }
+  .ld-js .ld-reveal:not(.is-in) { opacity: 1; translate: none; scale: none; }
+  .ld-show-screen { scale: 1; }
+}
+.ld-still .ld-float,
+.ld-still .ld-enter,
+.ld-still .ld-stage-wrap { animation: none !important; }
+
+/* Dark: a faint light rim so black devices don't melt into the black page. */
+.dark .ld-laptop-lid {
+  box-shadow:
+    inset 0 0 0 0.35em #2c2a35,
+    inset 0 0 0 0.55em #050507,
+    0 0 0 0.12em rgb(255 255 255 / 0.14),
+    0 3em 6em -2.5em rgb(0 0 0 / 0.6);
+}
+.dark .ld-phone-body { box-shadow: 0 0 0 0.3em rgb(255 255 255 / 0.1), 0 4em 9em -3em rgb(0 0 0 / 0.7); }
+
+.ld-kicker { color: var(--k); }
+.dark .ld-kicker { color: color-mix(in srgb, var(--k) 55%, white); }
+
+}

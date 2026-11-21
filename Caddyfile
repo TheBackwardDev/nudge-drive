@@ -1,0 +1,47 @@
+{
+	# Optional: an email address for certificate expiry notices.
+	# email you@your-domain.example
+}
+
+# Your public domain. Set DOMAIN in .env (docker-compose.prod.yml passes it to Caddy),
+# or replace the whole line with your domain, e.g. "drive.example.com {".
+{$DOMAIN:drive.example.com} {
+	encode gzip
+
+	# Android App Links: lets the Android app catch the Google sign-in redirects.
+	# Put your own assetlinks.json in ./static (see static/assetlinks.example.json).
+	handle /.well-known/assetlinks.json {
+		root * /srv/static
+		header Content-Type application/json
+		rewrite * /assetlinks.json
+		file_server
+	}
+
+	# Host page for the desktop app's in-app editor (token travels in the URL fragment only).
+	handle /editor-host.html {
+		root * /srv/static
+		header Cache-Control no-store
+		file_server
+	}
+
+	# API straight to the backend (Caddy re-resolves the container on every request,
+	# so a restarted backend with a new IP keeps working).
+	handle_path /api/* {
+		reverse_proxy backend:4000
+	}
+
+	# In-app editor (Collabora Online): editor UI, discovery and its websocket.
+	@collabora path /browser/* /hosting/* /cool/* /lool/*
+	handle @collabora {
+		reverse_proxy collabora:9980
+	}
+
+	handle {
+		reverse_proxy frontend:80
+	}
+}
+
+# Optional: send visitors who use the server's bare IP address to the domain.
+# http://203.0.113.10 {
+# 	redir https://drive.example.com{uri} permanent
+# }

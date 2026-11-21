@@ -1,0 +1,48 @@
+# Production overrides: only Caddy is public; backend and frontend stay internal.
+# Use together with the base file:
+#   docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+# Needs Docker Compose 2.24 or newer (for "!reset").
+services:
+  backend:
+    ports: !reset []
+    environment:
+      PREVIEW_CACHE_DIR: /var/cache/nudge-preview
+    volumes:
+      - preview_cache:/var/cache/nudge-preview
+  frontend:
+    ports: !reset []
+  # In-app document editing (Collabora Online CODE). Only reachable through Caddy and the backend.
+  collabora:
+    image: collabora/code:latest
+    restart: unless-stopped
+    mem_limit: 2g
+    cap_add:
+      - MKNOD
+    environment:
+      aliasgroup1: http://backend:4000
+      server_name: ${DOMAIN:-drive.example.com}
+      dictionaries: en_US en_GB
+      username: ${COLLABORA_ADMIN_USER}
+      password: ${COLLABORA_ADMIN_PASSWORD}
+      extra_params: --o:ssl.enable=false --o:ssl.termination=true --o:welcome.enable=false --o:home_mode.enable=true
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    depends_on:
+      - frontend
+    environment:
+      DOMAIN: ${DOMAIN:-drive.example.com}
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./static:/srv/static:ro
+      - caddy_data:/data
+      - caddy_config:/config
+
+volumes:
+  preview_cache:
+  caddy_data:
+  caddy_config:
