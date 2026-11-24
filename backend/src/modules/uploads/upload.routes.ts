@@ -237,20 +237,8 @@ export async function handleUpload(req: AuthRequest, res: Response, next: NextFu
           uploadedName = uploaded.data.name ?? fileName
           uploadedMimeType = uploaded.data.mimeType ?? meta.mimeType
           logUpload('google upload completed', { sessionId: session.id, accountId: account.id, fileName })
-
-          // Make the file public (anyone with link can edit/download)
-          try {
-            await drive.permissions.create({
-              fileId: providerFileId,
-              requestBody: {
-                role: 'writer',
-                type: 'anyone'
-              }
-            })
-            logUpload('google file permissions set to public writer', { sessionId: session.id, providerFileId })
-          } catch (err: any) {
-            console.error('Failed to make Google Drive file public:', err.message || err)
-          }
+          // The file stays private in the user's Drive. It only becomes viewable by others when the
+          // user shares it (Nudge share link, or "Drive link" which grants view-only access).
         }
 
         const file = account.provider === 's3' ? null : await prisma.file.create({ data: { userId: req.user!.id, connectedAccountId: account.id, folderId, provider: 'google_drive', providerFileId, name: uploadedName, mimeType: uploadedMimeType, sizeBytes: meta.sizeBytes, takenAt: fields.takenAt ?? null } })
@@ -332,13 +320,7 @@ async function finishGoogleUpload(
 ) {
   let file = await prisma.file.findFirst({ where: { providerFileId: fileMeta.id, userId } })
   if (!file) {
-    // Make the file public (anyone with link can edit/download)
-    try {
-      const drive = google.drive({ version: 'v3', auth: await getAuthedGoogleClient(account) })
-      await drive.permissions.create({ fileId: fileMeta.id, requestBody: { role: 'writer', type: 'anyone' } })
-    } catch (err: any) {
-      console.error('Failed to make Google Drive resumable file public:', err.message || err)
-    }
+    // The file stays private in the user's Drive (see the note in the direct upload route).
     file = await prisma.file.create({
       data: {
         userId, connectedAccountId: account.id, folderId: session.folderId, provider: 'google_drive', providerFileId: fileMeta.id,
