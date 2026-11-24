@@ -217,7 +217,7 @@ cd apps
 
 The apps talk to `https://nudge.qd.je` by default. To use your own server, change the server URL
 and set up your own Google OAuth Android client; see [docs/building-apps.md](docs/building-apps.md).
-GitHub Actions builds every app for you: push a tag like `v1.3.0` and `.github/workflows/release.yml`
+GitHub Actions builds every app for you: push a tag like `v1.9.4` and `.github/workflows/release.yml`
 builds the Android APK, the Windows installers and the macOS DMG and publishes them as a release.
 
 ## Configuration

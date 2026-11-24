@@ -111,7 +111,7 @@ The in-app document editor uses an embedded Chromium (KCEF) that is downloaded o
 
 ### Building installers on GitHub
 
-`.github/workflows/release.yml` builds everything for a release: push a tag like `v1.3.0` (or run it
+`.github/workflows/release.yml` builds everything for a release: push a tag like `v1.9.4` (or run it
 from the Actions tab) and it builds the Android APK, the Windows MSI and EXE and the macOS DMG, then
 publishes them as a GitHub Release. To sign the APK with your own key, add the repository secrets
 `ANDROID_KEYSTORE_BASE64` (the .jks file in base64), `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`

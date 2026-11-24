@@ -1,6 +1,6 @@
 # Builds every app and publishes them as a GitHub Release:
 #   Android APK, Windows installers (MSI + EXE) and the macOS DMG.
-# Push a tag like v1.3.0 (the desktop installers take their version from the tag), or run it from
+# Push a tag like v1.9.4 (the desktop installers take their version from the tag), or run it from
 # the Actions tab with a version number.
 #
 # Android signing: add these repository secrets to sign the APK with your own key, so users can
@@ -15,7 +15,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: "Version number (e.g. 1.3.0)"
+        description: "Version number (e.g. 1.9.4)"
         required: true
 
 permissions:
@@ -55,7 +55,8 @@ jobs:
         run: ./gradlew :app:assembleRelease --no-daemon --console=plain
       - name: Name the APK
         run: |
-          V="${VERSION#v}"
+          # The APK is named after the app's own versionName in apps/app/build.gradle.kts.
+          V=$(grep -m1 'versionName = ' apps/app/build.gradle.kts | cut -d'"' -f2)
           mkdir -p out
           cp apps/app/build/outputs/apk/release/*.apk "out/NudgeDrive-Android-$V.apk"
           rm -f apps/keystore.properties
@@ -138,7 +139,7 @@ jobs:
 
           | Platform | File |
           | --- | --- |
-          | Android 8.0+ | \`NudgeDrive-Android-${VERSION#v}.apk\` |
+          | Android 8.0+ | \`NudgeDrive-Android-*.apk\` |
           | Windows 10/11 | \`NudgeDrive-Windows-${VERSION#v}.exe\` (or the \`.msi\`) |
           | macOS 12+ (Apple silicon) | \`NudgeDrive-macOS-${VERSION#v}.dmg\` |
 
