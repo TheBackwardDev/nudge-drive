@@ -1,5 +1,7 @@
 # Builds every app and publishes them as a GitHub Release:
 #   Android APK, Windows installers (MSI + EXE) and the macOS DMG.
+# The release is created first, and each app is added to it as soon as its own build finishes,
+# so one slow or failing platform never holds back the others.
 # Push a tag like v1.9.4 (the desktop installers take their version from the tag), or run it from
 # the Actions tab with a version number.
 #
@@ -25,7 +27,43 @@ env:
   VERSION: ${{ github.event.inputs.version || github.ref_name }}
 
 jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Create the release (if it does not exist yet)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="v${VERSION#v}"
+          if gh release view "$TAG" -R "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "Release $TAG already exists; the builds will add or replace their files."
+            exit 0
+          fi
+          cat > notes.md <<EOF
+          ## Downloads
+
+          | Platform | File |
+          | --- | --- |
+          | Android 8.0+ | \`NudgeDrive-Android-*.apk\` |
+          | Windows 10/11 | \`NudgeDrive-Windows-${VERSION#v}.exe\` (or the \`.msi\`) |
+          | macOS 12+ (Apple silicon) | \`NudgeDrive-macOS-${VERSION#v}.dmg\` |
+
+          Each file appears here as soon as its build finishes (Android and Windows take about 10
+          minutes, macOS a little longer).
+
+          The installers are not code-signed yet. On Windows, choose **More info → Run anyway** if
+          SmartScreen warns you. On macOS, right-click the app and choose **Open** the first time.
+
+          The apps connect to https://nudge.qd.je. To use your own server, see the README.
+          EOF
+          gh release create "$TAG" -R "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --title "Nudge Drive $TAG" --notes-file notes.md
+
   android:
+    needs: create-release
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     timeout-minutes: 40
     steps:
@@ -60,13 +98,15 @@ jobs:
           mkdir -p out
           cp apps/app/build/outputs/apk/release/*.apk "out/NudgeDrive-Android-$V.apk"
           rm -f apps/keystore.properties
-      - uses: actions/upload-artifact@v4
-        with:
-          name: android
-          path: out/*.apk
-          if-no-files-found: error
+      - name: Add to the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "v${VERSION#v}" out/* --clobber -R "$GITHUB_REPOSITORY"
 
   windows:
+    needs: create-release
+    permissions:
+      contents: write
     runs-on: windows-latest
     timeout-minutes: 40
     steps:
@@ -89,13 +129,16 @@ jobs:
           mkdir -p out
           cp apps/desktop/build/compose/binaries/main-release/msi/*.msi "out/NudgeDrive-Windows-$V.msi"
           cp apps/desktop/build/compose/binaries/main-release/exe/*.exe "out/NudgeDrive-Windows-$V.exe"
-      - uses: actions/upload-artifact@v4
-        with:
-          name: windows
-          path: out/*
-          if-no-files-found: error
+      - name: Add to the release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "v${VERSION#v}" out/* --clobber -R "$GITHUB_REPOSITORY"
 
   macos:
+    needs: create-release
+    permissions:
+      contents: write
     runs-on: macos-14
     timeout-minutes: 40
     steps:
@@ -112,45 +155,8 @@ jobs:
         run: |
           mkdir -p out
           cp apps/desktop/build/compose/binaries/main-release/dmg/*.dmg "out/NudgeDrive-macOS-${VERSION#v}.dmg"
-      - uses: actions/upload-artifact@v4
-        with:
-          name: macos
-          path: out/*.dmg
-          if-no-files-found: error
-
-  release:
-    needs: [android, windows, macos]
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/download-artifact@v4
-        with:
-          path: dist
-          merge-multiple: true
-      - name: Publish the release
+      - name: Add to the release
         env:
           GH_TOKEN: ${{ github.token }}
-        run: |
-          TAG="v${VERSION#v}"
-          ls -l dist
-          cat > notes.md <<EOF
-          ## Downloads
+        run: gh release upload "v${VERSION#v}" out/* --clobber -R "$GITHUB_REPOSITORY"
 
-          | Platform | File |
-          | --- | --- |
-          | Android 8.0+ | \`NudgeDrive-Android-*.apk\` |
-          | Windows 10/11 | \`NudgeDrive-Windows-${VERSION#v}.exe\` (or the \`.msi\`) |
-          | macOS 12+ (Apple silicon) | \`NudgeDrive-macOS-${VERSION#v}.dmg\` |
-
-          The installers are not code-signed yet. On Windows, choose **More info → Run anyway** if
-          SmartScreen warns you. On macOS, right-click the app and choose **Open** the first time.
-
-          The apps connect to https://nudge.qd.je. To use your own server, see the README.
-          EOF
-          if gh release view "$TAG" -R "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-            gh release upload "$TAG" dist/* --clobber -R "$GITHUB_REPOSITORY"
-          else
-            gh release create "$TAG" dist/* -R "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" \
-              --title "Nudge Drive $TAG" --notes-file notes.md
-          fi
