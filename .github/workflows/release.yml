@@ -139,10 +139,14 @@ jobs:
         run: gh release upload "v${VERSION#v}" out/* --clobber -R "$GITHUB_REPOSITORY"
 
   macos:
+    # GitHub does not give Mac machines to some private repos ("configuration ... is not supported"),
+    # so the Mac build runs only once the repo is public, or when the repository variable
+    # BUILD_MACOS is set to true (Settings > Secrets and variables > Actions > Variables).
+    if: ${{ !github.event.repository.private || vars.BUILD_MACOS == 'true' }}
     needs: create-release
     permissions:
       contents: write
-    runs-on: macos-14
+    runs-on: macos-latest
     timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
