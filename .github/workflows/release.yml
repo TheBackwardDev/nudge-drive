@@ -46,9 +46,12 @@ jobs:
 
           | Platform | File |
           | --- | --- |
-          | Android 8.0+ | \`NudgeDrive-Android-*.apk\` |
-          | Windows 10/11 | \`NudgeDrive-Windows-${VERSION#v}.exe\` (or the \`.msi\`) |
-          | macOS 12+ (Apple silicon) | \`NudgeDrive-macOS-${VERSION#v}.dmg\` |
+          | Android 8.0+ | \`NudgeDrive-Android.apk\` |
+          | Windows 10/11 | \`NudgeDrive-Windows.exe\` (or the \`.msi\`) |
+          | macOS 12+ (Apple silicon) | \`NudgeDrive-macOS.dmg\` |
+          | iPhone / iPad | No app yet: open https://nudge.qd.je in Safari, tap Share, then **Add to Home Screen** |
+
+          Download the files under **Assets** below, not "Source code" (that is only the code).
 
           Each file appears here as soon as its build finishes (Android and Windows take about 10
           minutes, macOS a little longer).
@@ -93,10 +96,10 @@ jobs:
         run: ./gradlew :app:assembleRelease --no-daemon --console=plain
       - name: Name the APK
         run: |
-          # The APK is named after the app's own versionName in apps/app/build.gradle.kts.
-          V=$(grep -m1 'versionName = ' apps/app/build.gradle.kts | cut -d'"' -f2)
+          # Fixed file names, so https://github.com/<owner>/<repo>/releases/latest/download/<name>
+          # (used by the README download buttons) always points at the newest version.
           mkdir -p out
-          cp apps/app/build/outputs/apk/release/*.apk "out/NudgeDrive-Android-$V.apk"
+          cp apps/app/build/outputs/apk/release/*.apk out/NudgeDrive-Android.apk
           rm -f apps/keystore.properties
       - name: Add to the release
         env:
@@ -127,8 +130,8 @@ jobs:
         shell: bash
         run: |
           mkdir -p out
-          cp apps/desktop/build/compose/binaries/main-release/msi/*.msi "out/NudgeDrive-Windows-$V.msi"
-          cp apps/desktop/build/compose/binaries/main-release/exe/*.exe "out/NudgeDrive-Windows-$V.exe"
+          cp apps/desktop/build/compose/binaries/main-release/msi/*.msi out/NudgeDrive-Windows.msi
+          cp apps/desktop/build/compose/binaries/main-release/exe/*.exe out/NudgeDrive-Windows.exe
       - name: Add to the release
         shell: bash
         env:
@@ -154,7 +157,7 @@ jobs:
       - name: Name the DMG
         run: |
           mkdir -p out
-          cp apps/desktop/build/compose/binaries/main-release/dmg/*.dmg "out/NudgeDrive-macOS-${VERSION#v}.dmg"
+          cp apps/desktop/build/compose/binaries/main-release/dmg/*.dmg out/NudgeDrive-macOS.dmg
       - name: Add to the release
         env:
           GH_TOKEN: ${{ github.token }}

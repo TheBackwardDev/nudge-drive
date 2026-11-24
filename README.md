@@ -25,15 +25,23 @@ sizes, folders) and passes file data between your devices and your storage.
 
 ## Download
 
-Get the apps from the [latest release](https://github.com/TheBackwardDev/nudge-drive/releases/latest):
+<p align="center">
+  <a href="https://github.com/TheBackwardDev/nudge-drive/releases/latest/download/NudgeDrive-Android.apk"><img alt="Download for Android (APK)" src="https://img.shields.io/badge/Android-Download%20APK-3DDC84?style=for-the-badge&logo=android&logoColor=white" /></a>
+  <a href="https://github.com/TheBackwardDev/nudge-drive/releases/latest/download/NudgeDrive-Windows.exe"><img alt="Download for Windows" src="https://img.shields.io/badge/Windows-Download%20.exe-0078D4?style=for-the-badge&logo=windows&logoColor=white" /></a>
+  <a href="https://github.com/TheBackwardDev/nudge-drive/releases/latest/download/NudgeDrive-macOS.dmg"><img alt="Download for macOS" src="https://img.shields.io/badge/macOS-Download%20.dmg-000000?style=for-the-badge&logo=apple&logoColor=white" /></a>
+  <a href="https://nudge.qd.je"><img alt="Open the web app (works on iPhone)" src="https://img.shields.io/badge/iPhone%20%26%20Web-Open%20web%20app-7059F0?style=for-the-badge&logo=safari&logoColor=white" /></a>
+</p>
 
-| Platform | File |
+| Platform | How to get it |
 | --- | --- |
-| Android 8.0+ | `NudgeDrive-Android-<version>.apk` |
-| Windows 10/11 | `NudgeDrive-Windows-<version>.exe` or `.msi` |
-| macOS 12+ (Apple silicon) | `NudgeDrive-macOS-<version>.dmg` |
+| **Android** 8.0+ | [Download the APK](https://github.com/TheBackwardDev/nudge-drive/releases/latest/download/NudgeDrive-Android.apk), open it and allow "Install unknown apps" when asked. |
+| **Windows** 10/11 | [Download the installer (.exe)](https://github.com/TheBackwardDev/nudge-drive/releases/latest/download/NudgeDrive-Windows.exe) or the [.msi](https://github.com/TheBackwardDev/nudge-drive/releases/latest/download/NudgeDrive-Windows.msi). If SmartScreen warns you, choose **More info → Run anyway**. |
+| **macOS** 12+ (Apple silicon) | [Download the .dmg](https://github.com/TheBackwardDev/nudge-drive/releases/latest/download/NudgeDrive-macOS.dmg). The first time, right-click the app and choose **Open**. |
+| **iPhone / iPad** | There is no iOS app yet. Open **https://nudge.qd.je** in Safari, tap **Share**, then **Add to Home Screen**; it opens like an app. |
+| **Web** | Use it in any browser at **https://nudge.qd.je**. |
 
-Or use the web app at **https://nudge.qd.je**. There is no iOS app yet; iPhone users can use the web app.
+All versions and release notes are on the [Releases page](https://github.com/TheBackwardDev/nudge-drive/releases).
+The installers are not code-signed yet, which is why Windows and macOS show a warning the first time.
 
 ## Demo video
 
