@@ -23,6 +23,18 @@ server with Docker Compose (see [Self-hosting](#self-hosting-quick-start)).
 Your files stay in your own Google Drive and S3 storage. The server keeps a list of them (names,
 sizes, folders) and passes file data between your devices and your storage.
 
+## Download
+
+Get the apps from the [latest release](https://github.com/TheBackwardDev/nudge-drive/releases/latest):
+
+| Platform | File |
+| --- | --- |
+| Android 8.0+ | `NudgeDrive-Android-<version>.apk` |
+| Windows 10/11 | `NudgeDrive-Windows-<version>.exe` or `.msi` |
+| macOS 12+ (Apple silicon) | `NudgeDrive-macOS-<version>.dmg` |
+
+Or use the web app at **https://nudge.qd.je**. There is no iOS app yet; iPhone users can use the web app.
+
 ## Demo video
 
 <p align="center">
@@ -174,7 +186,7 @@ You need a Linux server with Docker (Compose 2.24 or newer), a domain pointing a
 Cloud OAuth client. The full walkthrough is in [docs/self-hosting.md](docs/self-hosting.md).
 
 ```bash
-git clone <this repository> nudge-drive
+git clone https://github.com/TheBackwardDev/nudge-drive.git
 cd nudge-drive
 cp .env.docker.example .env
 # Edit .env: DOMAIN, FRONTEND_URL, secrets, Google OAuth client, ADMIN_EMAILS, SMTP
@@ -205,7 +217,8 @@ cd apps
 
 The apps talk to `https://nudge.qd.je` by default. To use your own server, change the server URL
 and set up your own Google OAuth Android client; see [docs/building-apps.md](docs/building-apps.md).
-The GitHub Actions workflow in `.github/workflows/desktop.yml` builds the desktop installers.
+GitHub Actions builds every app for you: push a tag like `v1.3.0` and `.github/workflows/release.yml`
+builds the Android APK, the Windows installers and the macOS DMG and publishes them as a release.
 
 ## Configuration
 

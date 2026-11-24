@@ -73,7 +73,7 @@ Any other SMTP provider works too. Port 465 uses TLS from the start; other ports
 ## 4. Get the code and configure it
 
 ```bash
-git clone <this repository> nudge-drive
+git clone https://github.com/TheBackwardDev/nudge-drive.git
 cd nudge-drive
 cp .env.docker.example .env
 chmod 600 .env

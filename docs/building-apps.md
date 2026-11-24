@@ -111,7 +111,13 @@ The in-app document editor uses an embedded Chromium (KCEF) that is downloaded o
 
 ### Building installers on GitHub
 
-`.github/workflows/desktop.yml` builds the Windows installers (and optionally the macOS DMG) on
+`.github/workflows/release.yml` builds everything for a release: push a tag like `v1.3.0` (or run it
+from the Actions tab) and it builds the Android APK, the Windows MSI and EXE and the macOS DMG, then
+publishes them as a GitHub Release. To sign the APK with your own key, add the repository secrets
+`ANDROID_KEYSTORE_BASE64` (the .jks file in base64), `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`
+and `ANDROID_KEY_PASSWORD`; without them the APK is signed with a throwaway debug key.
+
+For a one-off desktop build without a release, `.github/workflows/desktop.yml` builds the Windows installers (and optionally the macOS DMG) on
 GitHub's runners. Run it from the Actions tab (**Run workflow**, enter a version) or push a tag like
 `desktop-v1.2.3`. The installers are attached to the workflow run as artifacts. The installers are not
 code-signed; Windows SmartScreen and macOS Gatekeeper will warn users until you add signing.

@@ -2,6 +2,7 @@
 node_modules/
 dist/
 build/
+bin/
 .gradle/
 .kotlin/
 *.log
